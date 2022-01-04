@@ -1,6 +1,6 @@
 <?php
 
-$nomeArquivo = 'arquivo1.txt';
+$nomeArquivo = 'arquivos/arquivo1.txt';
 $separadorLinha = ";\r\n";
 
 if (file_exists($nomeArquivo)) 
