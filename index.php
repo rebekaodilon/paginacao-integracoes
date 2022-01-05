@@ -19,11 +19,11 @@ $login = ftp_login($ftp_conn, 'testes_zukkin', 'yC8peZbUuUdXQKuB');
 ftp_pasv($ftp_conn, true);
 
 $file = ftp_nlist($ftp_conn, "/arquivos");
-var_dump($file); die;
 
-for ($i=0; $i < count($listaArquivos); $i++) {
-
-    $nomeArquivo = $listaArquivos[$i];
+for ($i=0; $i < count($file); $i++) {
+    
+    $nomeArquivo = $file[$i];
+    var_dump($nomeArquivo); die;
     $separadorLinha = ";\r\n";
 
     if (file_exists($nomeArquivo)) 
