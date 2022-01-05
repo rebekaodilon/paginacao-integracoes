@@ -1,5 +1,14 @@
 <?php
 
+$ftp_server = "ftp.zukk.in";
+$ftp_conn = ftp_connect($ftp_server);
+$login = ftp_login($ftp_conn, 'testes_zukkin', 'yC8peZbUuUdXQKuB');
+
+$file_list = ftp_nlist($ftp_conn, ".");
+var_dump($file_list);
+
+ftp_close($ftp_conn);
+
 $nomeArquivo = 'arquivos/arquivo1.txt';
 $separadorLinha = ";\r\n";
 
@@ -7,36 +16,33 @@ if (file_exists($nomeArquivo))
 {
     $tamanhoArquivo = filesize($nomeArquivo);
     $arquivo = fopen($nomeArquivo, 'r+');
+    $totalLinhasArquivo = count(file($nomeArquivo));
     $contaLinhas = 0;
     $maxLinhas = 1000;
     $resultado = array();
-    
-    
+    $cont = 0;
+
     while(!feof($arquivo))
     {
         if ($contaLinhas == $maxLinhas)
         {
-            // var_dump(array_chunk($resultado , $maxLinhas));
-            var_dump('conta linhas igual a max linhas');
             unset($resultado);
             $resultado = array();
             $contaLinhas = 0;
         }
         else if ($contaLinhas < $maxLinhas)
         {
-            var_dump('conta linhas menor que max linhas');
             $resultado[] = explode($separadorLinha, fgets($arquivo, $tamanhoArquivo));
-            // echo $resultado[$contaLinhas][0] . '<br>';
-            
+            // Faz o processamento do array
         }
         else
         {
-            var_dump('conta linhas maior que max linhas');
             break;
         }
         $contaLinhas++;
+        $cont++;
     }
-    // var_dump($resultado);
+    // echo json_encode($resultado);
     fclose($arquivo);
 } 
 else 
