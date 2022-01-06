@@ -28,49 +28,15 @@ if(!empty($dir_files))
         // transforma o arquivo em array
         $file = explode("\n", $file);
         foreach($file as $key_line => $line){$file[$key_line] = explode(";", $line);}
-
+        $fileArray = array_chunk($file, 1000);
+        
         // loop
-        for ($i=0; $i < count($file); $i++) {
-    
-            $nomeArquivo = $file[$i];
-            $arquivo = explode('/', $nomeArquivo);
-            // var_dump($nomeArquivo); die;
-            $separadorLinha = ";\r\n";
-        
-            if ($arquivo[2] != '' and $arquivo[2] != false and $arquivo[2] != null) 
-            {
-                // $tamanhoArquivo = filesize($arquivo[2]);
-                $arquivo = fopen($arquivo[2], 'r+');
-                $contaLinhas = 0;
-                $maxLinhas = 1000;
-                $resultado = array();
-        
-                while(!feof($arquivo))
-                {
-                    if ($contaLinhas == $maxLinhas)
-                    {
-                        unset($resultado);
-                        $resultado = array();
-                        $contaLinhas = 0;
-                    }
-                    else if ($contaLinhas < $maxLinhas)
-                    {
-                        $resultado[] = explode($separadorLinha, fgets($arquivo, $tamanhoArquivo));
-                        // Faz o processamento do array
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    $contaLinhas++;
-                }
-                echo json_encode($resultado);
-                fclose($arquivo);
-            } 
-            else 
-            {
-                exit('ERRO => Arquivo vazio ou inexistente.');
-            }
+        for ($i=0; $i < count($fileArray); $i++) {
+            // guarda as 1000 linhas
+            $lines = $fileArray[$i];
+
+            echo json_encode($lines); die;
         }
+        
     }
 }
