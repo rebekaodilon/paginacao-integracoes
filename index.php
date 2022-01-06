@@ -28,15 +28,33 @@ if(!empty($dir_files))
         // transforma o arquivo em array
         $file = explode("\n", $file);
         foreach($file as $key_line => $line){$file[$key_line] = explode(";", $line);}
-        $fileArray = array_chunk($file, 1000);
-        
-        // loop
-        for ($i=0; $i < count($fileArray); $i++) {
-            // guarda as 1000 linhas
-            $lines = $fileArray[$i];
 
-            echo json_encode($lines); die;
-        }
+        $chuncked_array = array_chunk($file, 1000);
+        $primeiras_mil_linhas = $chuncked_array[0];
         
+        // processa as primeiras 1000 linhas
+        echo json_encode($primeiras_mil_linhas);
+        // termina o processo
+
+        // remove as linhas processadas do arquivo
+        unset($chuncked_array[0]);
+
+        // re-transforma o chunk em array
+        $array_processado = [];
+        foreach($chuncked_array as $chunk){
+            foreach($chunk as $array_chuncked){
+                $array_processado[] = $array_chuncked;
+            }
+        }
+
+        // transforma o array processado em arquivo novamente
+        foreach($array_processado as $key_line => $line){$array_processado[$key_line] = implode(";", $line);}
+        $array_processado = implode("\n", $array_processado);
+        
+        // salva o arquivo novamente sem o array processado
+        if($ftp->putFromString($dir_file, $array_processado))
+        {
+            echo '<br/><br/>Arquivo processado com sucesso!';
+        }
     }
 }
