@@ -23,18 +23,17 @@ $file = ftp_nlist($ftp_conn, "/arquivos");
 for ($i=0; $i < count($file); $i++) {
     
     $nomeArquivo = $file[$i];
-    var_dump($nomeArquivo); die;
+    $arquivo = explode('/', $nomeArquivo);
+    // var_dump($nomeArquivo); die;
     $separadorLinha = ";\r\n";
 
-    if (file_exists($nomeArquivo)) 
+    if ($arquivo[2] != '' and $arquivo[2] != false and $arquivo[2] != null) 
     {
-        $tamanhoArquivo = filesize($nomeArquivo);
-        $arquivo = fopen($nomeArquivo, 'r+');
-        $totalLinhasArquivo = count(file($nomeArquivo));
+        // $tamanhoArquivo = filesize($arquivo[2]);
+        $arquivo = fopen($arquivo[2], 'r+');
         $contaLinhas = 0;
         $maxLinhas = 1000;
         $resultado = array();
-        $cont = 0;
 
         while(!feof($arquivo))
         {
@@ -54,7 +53,6 @@ for ($i=0; $i < count($file); $i++) {
                 break;
             }
             $contaLinhas++;
-            $cont++;
         }
         echo json_encode($resultado);
         fclose($arquivo);
