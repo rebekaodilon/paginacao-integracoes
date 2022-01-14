@@ -31,6 +31,13 @@ class PaginateFile
     private $trash_path;
 
     /**
+     * Array com as linhas do arquivo separadas
+     * 
+     * @var array
+     */
+    private $chuncked_array;
+
+    /**
      * Construtor
      * 
      * @param int $totalLinhas
@@ -40,12 +47,13 @@ class PaginateFile
      * 
      * @return void
      */
-    public function __construct(int $totalLinhas, FtpClient $ftp, string $file_path, string $trash_path)
+    public function __construct(int $totalLinhas, FtpClient $ftp, string $file_path, string $trash_path, array $chuncked_array)
     {
         $this->totalLinhas = $totalLinhas;
         $this->ftp = $ftp;
         $this->file_path = $file_path;
         $this->trash_path = $trash_path;
+        $this->chuncked_array = $trash_path;
     }
 
     /**
@@ -100,12 +108,14 @@ class PaginateFile
      * 
      * @param int $linhas
      * @param array $chuncked_array
-     * @param string $file_path
      */
-    public function deleteFileLines($linhas, $chuncked_array, $file_path)
+    public function deleteFileLines($linhas)
     {
         // lista a localização de todos os arquivos da pasta
-        $dir_files = $ftp->nlist($file_path);
+        $dir_files = $ftp->nlist($this->file_path);
+
+        // pega a localização do primeiro arquivo
+        $dir_file = $dir_files[array_key_first($dir_files)];
 
         // pega o conteudo do primeiro arquivo
         $file = $ftp->getContent($dir_file);
@@ -117,8 +127,8 @@ class PaginateFile
 
             if($file != '' and $file != false and $file != null)
             {
-                $arquivo_processado = $chuncked_array[0];
-                unset($chuncked_array[0]);
+                $arquivo_processado = $this->chuncked_array[0];
+                unset($this->chuncked_array[0]);
                 unset($linhas[0]);
     
                 // re-transforma o chunk em array
