@@ -22,7 +22,7 @@ $ftp->pasv(true);
 $file_path = "./arquivos/";
 $trash_path = "./lixeira/";
 
-$paginacao = new PaginateFile(100, $ftp, $file_path, $trash_path, "\n", ";");
+$paginacao = new PaginateFile(5000, $ftp, $file_path, $trash_path, "\n", ";");
 
 $primeiras_linhas = $paginacao->getFileLines();
 var_dump($primeiras_linhas);

@@ -116,7 +116,7 @@ class PaginateFile
                 $this->ftp->rename($this->dir_file, $this->trash_path . basename($this->dir_file));
 
                 // salva o conteudo no arquivo
-                $this->ftp->putFromString($trash_file, $file_content);
+                $this->ftp->putFromString($this->dir_file, $file_content);
             }
             
             // se ele tiver conseguido pegar o conteudo e o mesmo for válido
@@ -141,6 +141,10 @@ class PaginateFile
      */
     public function deleteFileLines()
     {
+        if ($this->dir_file == null) {
+            echo '<br/><br/>Arquivo não encontrado ou diretório vazio!';
+            die;
+        }
         // pega o conteudo do primeiro arquivo
         $file = $this->ftp->getContent($this->dir_file);
 
@@ -167,16 +171,14 @@ class PaginateFile
             // salva o arquivo novamente sem o array processado
             if($this->ftp->putFromString($this->dir_file, $array_processado))
             {
-                $message = '<br/><br/>Arquivo processado com sucesso!';
+                echo '<br/><br/>Arquivo processado com sucesso!';
             }
         }
         else{
             // Remove arquivo da pasta de origem
             $this->ftp->delete($this->dir_file);
             
-            $message = '<br/><br/>Arquivo processado e enviado pra a lixeira!';
+            echo '<br/><br/>Arquivo processado e enviado pra a lixeira!';
         }
-
-        return $message;
     }
 }
