@@ -131,6 +131,10 @@ class PaginateFile
 
                 return $this->linhas;
             }
+            else
+            {
+                return 'Arquivo vazio';
+            }
         }
     }
 
@@ -144,9 +148,10 @@ class PaginateFile
         if ($this->dir_file == null) {
             echo '<br/><br/>Arquivo não encontrado ou diretório vazio!';
             die;
+        }else{
+            // pega o conteudo do primeiro arquivo
+            $file = $this->ftp->getContent($this->dir_file);
         }
-        // pega o conteudo do primeiro arquivo
-        $file = $this->ftp->getContent($this->dir_file);
 
         // se tiver achado algum arquivo
         if($file != '' and $file != false and $file != null)
