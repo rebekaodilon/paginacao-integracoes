@@ -2,52 +2,82 @@
 
 class PaginateFile
 {
+    /** 
+     * Variável que recebe a instancia do FTP com suas configurações
+     * 
+     * @var \FtpClient\FtpClient
+     */
     private $ftp;
+
+    /**
+     * Váriavel de controle de tamanho de paginação
+     *
+     * @var int
+     */
+    private $totalLinhas;
+
+    /**
+     * Path do arquivo que será lido
+     *
+     * @var string
+     */
+    private $file_path;
+
+    /**
+     * Path do arquivo que será salvo na lixeira
+     * 
+     * @var string
+     */
+    private $trash_path;
 
     /**
      * Construtor
      * 
      * @param int $totalLinhas
+     * @param \FtpClient\FtpClient $ftp
+     * @param string file_path
+     * @param string trash_path
+     * 
+     * @return void
      */
-    public function __construct(int $totalLinhas, FtpClient $ftp)
+    public function __construct(int $totalLinhas, FtpClient $ftp, string $file_path, string $trash_path)
     {
         $this->totalLinhas = $totalLinhas;
         $this->ftp = $ftp;
+        $this->file_path = $file_path;
+        $this->trash_path = $trash_path;
     }
 
     /**
      * Retorna as linhas do arquivo
      * 
-     * @param FtpClient $ftp
-     * @param string $file_path
-     * @param string $trash_path
-    */
-    public function getFileLines($ftp, $file_path, $trash_path)
+     */
+    public function getFileLines()
     {
         // lista a localização de todos os arquivos da pasta
-        $dir_files = $ftp->nlist($file_path);
+        $dir_files = $this->ftp->nlist($this->file_path);
 
         // se tiver achado algum arquivo
         if(!empty($dir_files))
         {
             // pega a localização do primeiro arquivo
             $dir_file = $dir_files[array_key_first($dir_files)];
-            $trash_file = $trash_path . basename($dir_file);
+            $trash_file = $this->trash_path . basename($dir_file);
 
             // pega o conteudo do primeiro arquivo
-            $file = $ftp->getContent($dir_file);
+            $file = $this->ftp->getContent($dir_file);
             
             // salva todo o conteudo do arquivo em uma variável
             $file_content = $file;
 
             // se não existir na lixeira cria uma copia na lixeira
-            if(empty($ftp->getContent($trash_path . basename($dir_file))))
+            if(empty($this->ftp->getContent($this->trash_path . basename($dir_file))))
             {
                 // Move arquivo para lixeira
-                $ftp->rename($dir_file, $trash_path . basename($dir_file));
+                $this->ftp->rename($dir_file, $this->trash_path . basename($dir_file));
 
                 // salva o conteudo no arquivo
-                $ftp->putFromString($trash_file, $file_content);
+                $this->ftp->putFromString($trash_file, $file_content);
             }
             
             // se ele tiver conseguido pegar o conteudo e o mesmo for válido
